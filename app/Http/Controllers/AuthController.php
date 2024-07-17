@@ -11,6 +11,28 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
 
+    public function get(){
+        $usuarios = User::all();
+        return response()->json([
+            'status' => true,
+            'datos' => $usuarios
+        ],200);
+    }
+
+    public function getUser($id){
+        $usuario = User::find($id);
+        if (!$usuario) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Usuario no encontrado'
+            ],400);
+        }
+        return response()->json([
+            'status' => true,
+            'datos' => $usuario
+        ],200);
+    }
+
     public function create(Request $request){
         $rules = [
             'nombre' => 'required|string|max:100',
@@ -59,7 +81,7 @@ class AuthController extends Controller
         if (!$usuario) {
             return response()->json([
                 'status' => false,
-                'errors' => 'Usuario no encontrado'
+                'message' => 'Usuario no encontrado'
             ],400);
         }
 
@@ -90,13 +112,26 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Datos de usuario actualizado satisfactoriamente',
-            'token' => $usuario
+            'datos' => $usuario
         ],200);
 
     }
 
-    public function delete(){
-        
+    public function delete(Request $request){
+        $usuario = User::find($request->id);
+        if (!$usuario) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Usuario no encontrado'
+            ],400);
+        }
+        User::destroy($request->id);
+        return response()->json([
+            'status' => true,
+            'message' => 'Usuario eliminado satisfactoriamente',
+            'datos' => $usuario
+        ],200);
+
     }
 
     public function login(Request $request){
