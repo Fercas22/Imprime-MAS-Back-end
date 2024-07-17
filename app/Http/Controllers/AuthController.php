@@ -10,26 +10,15 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function ejemplos() {
-        return response()->json([
-            'status' => true,
-            'message' => 'Hasta aqui todo bien'
-        ],400);
-    }
-
-    public function ejemplos2() {
-        return response()->json([
-            'status' => true,
-            'data' => Auth::user(),
-            'message' => 'Acceso con el token'
-        ],400);
-    }
 
     public function create(Request $request){
         $rules = [
-            'name' => 'required|string|max:100',
+            'nombre' => 'required|string|max:100',
+            'nick_name' => 'required|string|max:100',
             'email' => 'required|string|max:100|unique:users',
             'password' => 'required|string|min:8',
+            'telefono' => 'required|string|min:10',
+            'telefono_emergencia' => 'required|string|min:10',
         ];
         $validator = \Validator::make($request->input(),$rules);
 
@@ -40,15 +29,74 @@ class AuthController extends Controller
             ],400);
         }
         $user = User::create([
-            'name' => $request->name,
+            'nombre' => $request->nombre,
+            'nick_name' => $request->nick_name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'telefono' => $request->telefono,
+            'telefono_emergencia' => $request->telefono_emergencia,
+            'id_rol' => 2,
         ]);
+
+        $token_acceso = $user->createToken('API TOKEN')->plainTextToken;
+
+        $user->update([
+            'token' => $token_acceso,
+        ]);
+
         return response()->json([
             'status' => true,
             'message' => 'Usuario creado satisfactoriamente',
-            'token' => $user->createToken('API TOKEN')->plainTextToken
+            'token' => $token_acceso
         ],200);
+
+    }
+
+    public function update(Request $request){
+
+        $usuario = User::find($request->id);
+
+        if (!$usuario) {
+            return response()->json([
+                'status' => false,
+                'errors' => 'Usuario no encontrado'
+            ],400);
+        }
+
+        $rules = [
+            'nombre' => 'required|string|max:100',
+            'nick_name' => 'required|string|max:100',
+            'telefono' => 'required|string|min:10',
+            'telefono_emergencia' => 'required|string|min:10',
+            'id_rol' => 'required|string|min:1',
+            
+        ];
+        $validator = \Validator::make($request->input(),$rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ],400);
+        }
+        $usuario->update([
+            'nombre' => $request->nombre,
+            'nick_name' => $request->nick_name,
+            'telefono' => $request->telefono,
+            'telefono_emergencia' => $request->telefono_emergencia,
+            'id_rol' => $request->id_rol,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Datos de usuario actualizado satisfactoriamente',
+            'token' => $usuario
+        ],200);
+
+    }
+
+    public function delete(){
+        
     }
 
     public function login(Request $request){
