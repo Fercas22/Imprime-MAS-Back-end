@@ -1,66 +1,111 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Imprime-mas Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este es un proyecto de Imprime-mas
 
-## About Laravel
+## Descripcion
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+En este proyecto se encontraran todos los endpoints para usar con el proyecto de Imprime-mas y se usaran para conectar con el front-end
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Estructura del proyecto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+![Estructura](public/assets/structure.png)
 
-## Learning Laravel
+- ***app***: A esta altura encontraras la carpeta **Http/Controllers** en la cual encontraras toda la logica del back-end y tambien encontraras la carpeta **Http/Models** en la cual encontraras los modelos para la coneccion de la base de datos.
+- ***public***: A esta altura encontraras la carpeta **assets** donde estaran los recursos de imagenes.
+- ***routes***: A esta altura encontraras el archivo **api.php** donde encontraras las url de todas las API´s
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Dependencias principales
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+-   <a href="https://windows.php.net/download#php-8.3">
+    <span style="color:orange">
+        PHP 8.1.X (Dando entender que X sea cualquier número)
+    </span>
+    </a> 
+-   <a href="https://laravel.com/">
+    <span style="color:orange">
+        Laravel 10
+    </span>
+    </a>
+-   <a href="https://getcomposer.org/">
+    <span style="color:orange">
+        Composer
+    </span>
+    </a>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Configuracion del entorno de desarrollo
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-### Premium Partners
+### Instalar dependencias
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+1. Usa Composer para instalar las dependencias del proyecto. Utiliza el siguiente comando:
 
-## Contributing
+```
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. Verifica la instalación de dependencias asegurandote de que todas las dependencias estén correctamente instaladas. Utiliza el siguiente comando:
 
-## Code of Conduct
+```
+composer update
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. Asegúrate de que el archivo de autoload de Composer esté correctamente generado. Utiliza el siguiente comando:
 
-## Security Vulnerabilities
+```
+composer dump-autoload
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. Asegúrate de que Laravel Sanctum esté instalado en tu proyecto, si no lo esta entonces lo puedes instalar utilizando el siguiente comando:
 
-## License
+```
+composer require laravel/sanctum
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Limpiar la cache
+
+A veces, las configuraciones de caché pueden causar problemas. Puedes limpiar la caché de configuración con:
+
+```
+php artisan config:cache
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+```
+
+### Configurar el archivo .env
+
+Copia y pega el archivo dejando la copia solo con el nombre de **.env**:
+
+```
+.env.example
+```
+
+y cambia las credenciales de la base de datos segun como lo tengas configurado.
+
+### Establecer el APP_KEY
+
+Asegúrate de establecer APP_KEY, que es la clave de aplicación. Puedes generarla usando el siguiente comando:
+
+```
+php artisan key:generate
+```
+
+### Finalmente corre el servidor
+
+Para correr el servidor de desarrollo puedes usar el servidor de desarrollo incorporado en Laravel para ejecutar la aplicación localmente:
+
+```
+php artisan serve
+```
+
+## Nota
+
+### Ten en consideracion lo siguiente
+
+- La terminal que se ejecuta con el comando de ***php artisan serve*** siempre debe estar abierta ya que si se cierra el proyecto no funcionara.
+- Para verificar que el servidor este arriba solo basta con darle click al lick que te aparece en consola o bien abriendo el localhost desde tu navegador.
+- Todos los endpoint los podras consumir desde postman o algun otro gestor de API´s para que puedas verlas.
+
+
+

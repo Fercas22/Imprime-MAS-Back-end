@@ -7,33 +7,46 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-
 class AuthController extends Controller
 {
-
-    public function get(){
+    public function get()
+    {
         $usuarios = User::all();
-        return response()->json([
-            'status' => true,
-            'datos' => $usuarios
-        ],200);
+
+        return response()->json(
+            [
+                'status' => true,
+                'datos' => $usuarios
+            ],
+            200
+        );
     }
 
-    public function getUser($id){
+    public function getUser($id)
+    {
         $usuario = User::find($id);
+
         if (!$usuario) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Usuario no encontrado'
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'Usuario no encontrado'
+                ],
+                400
+            );
         }
-        return response()->json([
-            'status' => true,
-            'datos' => $usuario
-        ],200);
+
+        return response()->json(
+            [
+                'status' => true,
+                'datos' => $usuario
+            ],
+            200
+        );
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $rules = [
             'nombre' => 'required|string|max:100',
             'nick_name' => 'required|string|max:100',
@@ -42,14 +55,18 @@ class AuthController extends Controller
             'telefono' => 'required|string|min:10',
             'telefono_emergencia' => 'required|string|min:10',
         ];
-        $validator = \Validator::make($request->input(),$rules);
+        $validator = \Validator::make($request->input(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->all()
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'errors' => $validator->errors()->all()
+                ],
+                400
+            );
         }
+
         $user = User::create([
             'nombre' => $request->nombre,
             'nick_name' => $request->nick_name,
@@ -66,23 +83,29 @@ class AuthController extends Controller
             'token' => $token_acceso,
         ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Usuario creado satisfactoriamente',
-            'token' => $token_acceso
-        ],200);
-
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Usuario creado satisfactoriamente',
+                'token' => $token_acceso
+            ],
+            200
+        );
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
 
         $usuario = User::find($request->id);
 
         if (!$usuario) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Usuario no encontrado'
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'Usuario no encontrado'
+                ],
+                400
+            );
         }
 
         $rules = [
@@ -91,16 +114,20 @@ class AuthController extends Controller
             'telefono' => 'required|string|min:10',
             'telefono_emergencia' => 'required|string|min:10',
             'id_rol' => 'required|string|min:1',
-            
+
         ];
-        $validator = \Validator::make($request->input(),$rules);
+        $validator = \Validator::make($request->input(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->all()
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'errors' => $validator->errors()->all()
+                ],
+                400
+            );
         }
+
         $usuario->update([
             'nombre' => $request->nombre,
             'nick_name' => $request->nick_name,
@@ -109,64 +136,92 @@ class AuthController extends Controller
             'id_rol' => $request->id_rol,
         ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Datos de usuario actualizado satisfactoriamente',
-            'datos' => $usuario
-        ],200);
-
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Datos de usuario actualizado satisfactoriamente',
+                'datos' => $usuario
+            ],
+            200
+        );
     }
 
-    public function delete(Request $request){
+    public function delete(Request $request)
+    {
         $usuario = User::find($request->id);
-        if (!$usuario) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Usuario no encontrado'
-            ],400);
-        }
-        User::destroy($request->id);
-        return response()->json([
-            'status' => true,
-            'message' => 'Usuario eliminado satisfactoriamente',
-            'datos' => $usuario
-        ],200);
 
+        if (!$usuario) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'Usuario no encontrado'
+                ],
+                400
+            );
+        }
+
+        User::destroy($request->id);
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Usuario eliminado satisfactoriamente',
+                'datos' => $usuario
+            ],
+            200
+        );
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $rules = [
             'email' => 'required|string|max:100',
             'password' => 'required|string',
         ];
-        $validator = \Validator::make($request->input(),$rules);
+        $validator = \Validator::make($request->input(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->all()
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'errors' => $validator->errors()->all()
+                ],
+                400
+            );
         }
-        if(!Auth::attempt($request->only('email','password'))){
-            return response()->json([
-                'status' => false,
-                'errors' => ['No autorizado']
-            ],401);
+
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'errors' => ['No autorizado']
+                ],
+                401
+            );
         }
-        $user = User::where('email',$request->email)->first();
-        return response()->json([
-            'status' => true,
-            'message' => 'El usuario fue logeado satisfactoriamente',
-            'data' => $user,
-            'token' => $user->createToken('API TOKEN')->plainTextToken
-        ],200);
+
+        $user = User::where('email', $request->email)->first();
+
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'El usuario fue logeado satisfactoriamente',
+                'data' => $user,
+                'token' => $user->createToken('API TOKEN')->plainTextToken
+            ],
+            200
+        );
     }
 
-    public function logout(){
+    public function logout()
+    {
         auth()->user()->tokens()->delete();
-        return response()->json([
-            'status' => true,
-            'message' => 'Sesión del usuario cerrado',
-        ],200);
+
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Sesión del usuario cerrado',
+            ],
+            200
+        );
     }
 }

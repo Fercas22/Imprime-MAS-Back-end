@@ -6,33 +6,46 @@ use Illuminate\Http\Request;
 use App\Models\Clientes;
 use Illuminate\Support\Facades\Hash;
 
-
 class ClientesController extends Controller
 {
-
-    public function clientes(){
+    public function clientes()
+    {
         $clientes = Clientes::all();
-        return response()->json([
-            'status' => true,
-            'datos' => $clientes
-        ],200);
+
+        return response()->json(
+            [
+                'status' => true,
+                'datos' => $clientes
+            ],
+            200
+        );
     }
 
-    public function cliente($id_cliente){
+    public function cliente($id_cliente)
+    {
         $cliente = Clientes::find($id_cliente);
+
         if (!$cliente) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Cliente no encontrado'
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'Cliente no encontrado'
+                ],
+                400
+            );
         }
-        return response()->json([
-            'status' => true,
-            'datos' => $cliente
-        ],200);
+
+        return response()->json(
+            [
+                'status' => true,
+                'datos' => $cliente
+            ],
+            200
+        );
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $rules = [
             'sobrenombre' => 'required|string',
             'nombre' => 'required|string',
@@ -52,14 +65,18 @@ class ClientesController extends Controller
             'metodoPago' => 'required|string',
             'mayoristaMenudista' => 'required',
         ];
-        $validator = \Validator::make($request->input(),$rules);
+        $validator = \Validator::make($request->input(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->all()
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'errors' => $validator->errors()->all()
+                ],
+                400
+            );
         }
+
         $cliente = Clientes::create([
             'sobrenombre' => $request->sobrenombre,
             'nombre' => $request->nombre,
@@ -80,22 +97,28 @@ class ClientesController extends Controller
             'mayoristaMenudista' => $request->mayoristaMenudista,
         ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Cliente creado satisfactoriamente',
-        ],200);
-
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Cliente creado satisfactoriamente',
+            ],
+            200
+        );
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
 
         $cliente = Clientes::find($request->id_cliente);
 
         if (!$cliente) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Cliente no encontrado'
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'Cliente no encontrado'
+                ],
+                400
+            );
         }
 
         $rules = [
@@ -117,14 +140,18 @@ class ClientesController extends Controller
             'metodoPago' => 'required|string',
             'mayoristaMenudista' => 'required',
         ];
-        $validator = \Validator::make($request->input(),$rules);
+        $validator = \Validator::make($request->input(), $rules);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->all()
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'errors' => $validator->errors()->all()
+                ],
+                400
+            );
         }
+
         $cliente->update([
             'sobrenombre' => $request->sobrenombre,
             'nombre' => $request->nombre,
@@ -145,28 +172,38 @@ class ClientesController extends Controller
             'mayoristaMenudista' => $request->mayoristaMenudista,
         ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Datos del cliente actualizado satisfactoriamente',
-        ],200);
-
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Datos del cliente actualizado satisfactoriamente',
+            ],
+            200
+        );
     }
 
-    public function delete(Request $request){
+    public function delete(Request $request)
+    {
         $cliente = Clientes::find($request->id_cliente);
+
         if (!$cliente) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Cliente no encontrado'
-            ],400);
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'Cliente no encontrado'
+                ],
+                400
+            );
         }
+
         Clientes::destroy($request->id_cliente);
-        return response()->json([
-            'status' => true,
-            'message' => 'Cliente eliminado satisfactoriamente',
-            'datos' => $cliente
-        ],200);
 
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'Cliente eliminado satisfactoriamente',
+                'datos' => $cliente
+            ],
+            200
+        );
     }
-
 }
