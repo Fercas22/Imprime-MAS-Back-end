@@ -10,11 +10,20 @@ use Illuminate\Support\Facades\Hash;
 class ClientesController extends Controller
 {
 
-    public function clientes(){
+    public function clientes(Request $request){
+        if($request->estatus){
+            $clientes = Clientes::onlyTrashed()->get();
+            return response()->json([
+                'status' => true,
+                'message' => $request->estatus,
+                'data' => ['clientes'=>$clientes]
+            ],200);
+        }
         $clientes = Clientes::all();
         return response()->json([
             'status' => true,
-            'datos' => $clientes
+            'message' => 'Listado',
+            'data' => ['clientes'=>$clientes]
         ],200);
     }
 
@@ -28,7 +37,7 @@ class ClientesController extends Controller
         }
         return response()->json([
             'status' => true,
-            'datos' => $cliente
+            'data' => ['cliente'=>$cliente]
         ],200);
     }
 
@@ -160,11 +169,11 @@ class ClientesController extends Controller
                 'message' => 'Cliente no encontrado'
             ],400);
         }
-        Clientes::destroy($request->id_cliente);
+        Clientes::find($request->id_cliente)->delete();
         return response()->json([
             'status' => true,
             'message' => 'Cliente eliminado satisfactoriamente',
-            'datos' => $cliente
+            'data' => $cliente
         ],200);
 
     }

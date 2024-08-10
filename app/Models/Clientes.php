@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Clientes extends Model
 {
+    use SoftDeletes;
     protected $table = "clientes";
     protected $primaryKey = "id_cliente";
 
@@ -28,4 +30,7 @@ class Clientes extends Model
         'metodoPago',
         'mayoristaMenudista',
     ];
+
+    protected $dates = ['deleted_at'];
+
 }

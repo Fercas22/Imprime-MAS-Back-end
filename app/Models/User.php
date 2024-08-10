@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable,SoftDeletes;
     // protected $table = "usuarios";
     // protected $primaryKey = "idPaciente";
 
@@ -20,6 +21,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'nombre',
         'nick_name',
         'email',
@@ -30,11 +32,17 @@ class User extends Authenticatable
         'token',
     ];
 
+    protected $dates = ['deleted_at'];
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
+    public function scopeExclude($query, $excluded=[]) 
+    {
+        return $query->select(array_diff($this->fillable, $excluded));
+    }
+
     protected $hidden = [
         'password',
         'remember_token',

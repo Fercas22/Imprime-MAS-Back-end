@@ -11,11 +11,21 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
 
-    public function get(){
-        $usuarios = User::all();
+    public function get(Request $request){
+        if($request->estatus){
+            $usuarios = User::onlyTrashed()->exclude(['token','id_rol'])->get();
+            return response()->json([
+                'status' => true,
+                'message'=>$request->all(),
+                'data' => ['usuarios'=>$usuarios]
+            ],200);
+        }
+        $usuarios = User::exclude(['token','id_rol'])->get();
+
         return response()->json([
             'status' => true,
-            'datos' => $usuarios
+            'message'=>'Listado',
+            'data' => ['usuarios'=>$usuarios]
         ],200);
     }
 
@@ -29,18 +39,18 @@ class AuthController extends Controller
         }
         return response()->json([
             'status' => true,
-            'datos' => $usuario
+            'data' => ['usuarios'=>$usuario]
         ],200);
     }
 
     public function create(Request $request){
         $rules = [
             'nombre' => 'required|string|max:100',
-            'nick_name' => 'required|string|max:100',
+            'nick_name' => 'string|max:100',//Opcional
             'email' => 'required|string|max:100|unique:users',
             'password' => 'required|string|min:8',
-            'telefono' => 'required|string|min:10',
-            'telefono_emergencia' => 'required|string|min:10',
+            'telefono' => 'required|string|min:10|max:10',
+            'telefono_emergencia' => 'string|min:10|max:10',//Opcional
         ];
         $validator = \Validator::make($request->input(),$rules);
 
@@ -69,7 +79,8 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Usuario creado satisfactoriamente',
-            'token' => $token_acceso
+            'data' => ['token' => $token_acceso]
+            
         ],200);
 
     }
@@ -88,10 +99,8 @@ class AuthController extends Controller
         $rules = [
             'nombre' => 'required|string|max:100',
             'nick_name' => 'required|string|max:100',
-            'telefono' => 'required|string|min:10',
-            'telefono_emergencia' => 'required|string|min:10',
-            'id_rol' => 'required|string|min:1',
-            
+            'telefono' => 'required|string|min:10|max:10',
+            'telefono_emergencia' => 'string|min:10',
         ];
         $validator = \Validator::make($request->input(),$rules);
 
@@ -106,13 +115,13 @@ class AuthController extends Controller
             'nick_name' => $request->nick_name,
             'telefono' => $request->telefono,
             'telefono_emergencia' => $request->telefono_emergencia,
-            'id_rol' => $request->id_rol,
         ]);
 
+        $usuario = User::exclude(['id_rol','token'])->find($request->id);
         return response()->json([
             'status' => true,
             'message' => 'Datos de usuario actualizado satisfactoriamente',
-            'datos' => $usuario
+            'data' => ['usuario'=>$usuario] 
         ],200);
 
     }
@@ -125,6 +134,7 @@ class AuthController extends Controller
                 'message' => 'Usuario no encontrado'
             ],400);
         }
+        
         User::destroy($request->id);
         return response()->json([
             'status' => true,
@@ -157,8 +167,8 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'El usuario fue logeado satisfactoriamente',
-            'data' => $user,
-            'token' => $user->createToken('API TOKEN')->plainTextToken
+            'data' => ['token' => $user->createToken('API TOKEN')->plainTextToken]
+            
         ],200);
     }
 
